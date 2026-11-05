@@ -3,40 +3,133 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Черновик карточки товара</title>
+    <meta name="theme-color" content="#f4f6f5">
+    <title>Контент-студия — Союзприбор</title>
+    <style>
+      :root{color-scheme:light;--ink:#202b30;--muted:#647278;--line:#dce4e2;--paper:#fff;--canvas:#f3f6f5;--teal:#087d75;--teal-dark:#06665f;--teal-soft:#e6f3f1;--amber:#966112;--amber-soft:#fff5df;--red:#a93535;--red-soft:#fff0ef;--shadow:0 12px 35px #2034360c}
+      *{box-sizing:border-box}body{margin:0;background:var(--canvas);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,textarea{font:inherit}button{cursor:pointer}.topbar{height:68px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 max(28px,calc((100vw - 1440px)/2));gap:20px}.brand{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:-.02em}.brand-mark{width:34px;height:34px;border-radius:10px;background:var(--teal);color:white;display:grid;place-items:center;font-size:17px}.brand-sub{font-weight:500;color:var(--muted);border-left:1px solid var(--line);padding-left:12px}.local-pill{border:1px solid #cce5e1;background:#f3fbf9;color:#166c64;border-radius:999px;padding:6px 11px;font-size:12px;font-weight:650;display:flex;align-items:center;gap:8px}.local-pill:before{content:"";width:7px;height:7px;border-radius:50%;background:#18a28e;box-shadow:0 0 0 3px #18a28e20}.shell{max-width:1440px;margin:auto;padding:38px 28px 64px}.intro{margin-bottom:28px;display:flex;justify-content:space-between;align-items:end;gap:24px}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.14em;font-weight:750;color:var(--teal);margin:0 0 9px}.intro h1{font-size:clamp(28px,3.4vw,42px);letter-spacing:-.045em;line-height:1.12;margin:0;max-width:760px}.intro p{margin:10px 0 0;color:var(--muted);max-width:720px}.step-note{color:#607076;font-size:13px;white-space:nowrap;padding-bottom:4px}.workspace{display:grid;grid-template-columns:minmax(360px,.91fr) minmax(500px,1.3fr);gap:20px;align-items:stretch}.panel{min-width:0;background:var(--paper);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}.panel-head{padding:19px 22px;border-bottom:1px solid #e8edec;display:flex;justify-content:space-between;align-items:center;gap:16px}.panel-title{display:flex;align-items:center;gap:11px}.panel-index{width:27px;height:27px;border-radius:8px;display:grid;place-items:center;background:#edf2f1;color:#536267;font-size:12px;font-weight:750}.panel-head h2{font-size:16px;letter-spacing:-.015em;margin:0}.panel-head p{font-size:12px;color:var(--muted);margin:2px 0 0}.panel-body{padding:22px}.field-label{font-size:13px;font-weight:680;display:block;margin-bottom:9px}.editor-wrap{border:1px solid #cfd9d7;border-radius:11px;overflow:hidden;background:#fbfcfc;transition:border-color .15s,box-shadow .15s}.editor-wrap:focus-within{border-color:var(--teal);box-shadow:0 0 0 3px #087d751b}.editor-toolbar{height:36px;background:#f2f5f4;border-bottom:1px solid #e1e7e5;display:flex;align-items:center;justify-content:space-between;padding:0 12px;color:#647278;font-size:11px}.editor-toolbar span:first-child{font-weight:700;letter-spacing:.06em}.editor-toolbar span:last-child{font-variant-numeric:tabular-nums}textarea{width:100%;min-height:385px;resize:vertical;border:0;outline:0;background:transparent;padding:16px;color:#29363a;font:13px/1.65 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;tab-size:2}.hint{color:var(--muted);font-size:12px;margin:10px 0 0}.inline-message{display:none;border-radius:9px;padding:10px 12px;margin-top:12px;font-size:13px}.inline-message.show{display:block}.inline-message.error{background:var(--red-soft);color:var(--red);border:1px solid #f1d1ce}.inline-message.info{background:var(--teal-soft);color:#176c64}.actions{display:flex;gap:10px;align-items:center;margin-top:20px}.primary{border:0;border-radius:9px;background:var(--teal);color:#fff;padding:11px 16px;font-size:14px;font-weight:700;box-shadow:0 3px 7px #087d7525;transition:background .15s,transform .15s}.primary:hover{background:var(--teal-dark)}.primary:active{transform:translateY(1px)}.primary:disabled{opacity:.7;cursor:wait}.secondary{border:1px solid var(--line);border-radius:9px;background:white;color:#435157;padding:10px 13px;font-weight:650;font-size:13px}.secondary:hover{background:#f5f8f7}.privacy-note{margin-left:auto;color:var(--muted);font-size:11px;text-align:right}.privacy-note b{display:block;color:#4c5c60;font-weight:650}.result-head{align-items:flex-start}.result-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.copy-btn{padding:8px 10px;font-size:12px}.result-body{padding:0 22px 22px}.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:0 -22px 20px;padding:0 22px}.tab{border:0;background:none;color:#69777b;padding:14px 12px 12px;font-size:13px;font-weight:650;border-bottom:2px solid transparent;margin-bottom:-1px}.tab[aria-selected="true"]{color:var(--teal-dark);border-color:var(--teal)}.tab:focus-visible,button:focus-visible{outline:3px solid #20a49880;outline-offset:2px}.empty-state{min-height:390px;display:grid;place-items:center;text-align:center;padding:30px}.empty-icon{width:58px;height:58px;border:1px solid #dbe6e3;background:#f5f9f8;border-radius:18px;margin:0 auto 14px;display:grid;place-items:center;color:#50847d;font-size:24px}.empty-state h3{margin:0;font-size:16px}.empty-state p{margin:7px auto 0;max-width:300px;color:var(--muted);font-size:13px}.empty-state .mini{color:#849095;font-size:11px;margin-top:18px}.hidden{display:none!important}.preview h3{font-size:12px;color:#647278;text-transform:uppercase;letter-spacing:.09em;margin:22px 0 8px}.preview h3:first-child{margin-top:0}.preview p{white-space:pre-wrap;margin:0;color:#2b383d}.preview .seo-title{font-size:20px;font-weight:700;line-height:1.35;letter-spacing:-.02em}.preview ul{padding-left:20px;margin:7px 0;color:#354247}.preview li+li{margin-top:4px}.spec-table{width:100%;border-collapse:collapse;font-size:13px}.spec-table td{padding:9px 10px;border-bottom:1px solid #edf0ef;vertical-align:top}.spec-table td:first-child{color:#68767a;width:42%}.notice{border-radius:10px;padding:12px 14px;margin-top:12px;font-size:12px}.notice.warning{background:var(--amber-soft);border:1px solid #f1dfb6;color:#75500f}.notice.neutral{background:#f2f5f4;border:1px solid #e2e8e6;color:#5e6b70}.notice strong{display:block;margin-bottom:4px}.code-output{max-height:610px;overflow:auto;padding:16px;border-radius:10px;background:#172326;color:#e5f0ed;font:12px/1.7 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}.loading-state{min-height:390px;display:grid;place-items:center;text-align:center;color:var(--muted)}.spinner{width:32px;height:32px;border:3px solid #dbe9e6;border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px}@keyframes spin{to{transform:rotate(360deg)}}.status-error{min-height:300px;display:grid;place-items:center;text-align:center;color:var(--red);padding:30px}.status-error p{max-width:380px}.footer-note{text-align:center;color:#849095;font-size:11px;margin-top:23px}
+      @media(max-width:980px){.workspace{grid-template-columns:1fr}.step-note{display:none}.result-body{min-height:300px}.empty-state,.loading-state{min-height:270px}}
+      @media(max-width:600px){.topbar{height:58px;padding:0 16px}.brand-sub{display:none}.local-pill{font-size:10px;padding:5px 8px}.shell{padding:26px 14px 40px}.intro{margin-bottom:19px}.intro h1{font-size:30px}.intro p{font-size:13px}.panel{border-radius:13px}.panel-head,.panel-body{padding:16px}.panel-head{align-items:flex-start}.result-head{flex-direction:column}.result-actions{width:100%;justify-content:flex-start}.copy-btn{flex:1}.result-body{padding:0 16px 16px}.tabs{margin:0 -16px 17px;padding:0 10px}.tab{padding:13px 9px;font-size:12px}.editor-toolbar{height:33px}textarea{min-height:300px;padding:13px;font-size:12px}.actions{align-items:stretch;flex-wrap:wrap}.primary{flex:1}.privacy-note{width:100%;text-align:left;margin:2px 0 0}.spec-table td{padding:8px 6px}.spec-table td:first-child{width:45%}}
+      @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+    </style>
   </head>
   <body>
-    <main>
-      <h1>Генератор черновика карточки товара</h1>
-      <p>Вставьте JSON одного товара. Генерация будет доступна после реализации сервиса.</p>
-      <form id="product-form">
-        <label for="product-json">Данные товара в JSON</label>
-        <textarea id="product-json" rows="18" cols="80" required>{
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">С</span><span>Союзприбор</span><span class="brand-sub">Контент-студия</span></div>
+      <div class="local-pill">Локальная генерация · Ollama</div>
+    </header>
+    <main class="shell">
+      <section class="intro" aria-labelledby="page-title">
+        <div><p class="eyebrow">Инструмент подготовки каталога</p><h1 id="page-title">Черновик карточки — из данных прибора</h1><p>Добавьте характеристики и описание. Сервис подготовит SEO-текст, поисковые фразы и материал для менеджера — без изменения исходных технических значений.</p></div>
+        <div class="step-note">01 / 02&nbsp;&nbsp; Данные → готовый контент</div>
+      </section>
+      <div class="workspace">
+        <section class="panel" aria-labelledby="source-title">
+          <div class="panel-head"><div class="panel-title"><span class="panel-index">01</span><div><h2 id="source-title">Исходные данные</h2><p>JSON одного контрольно-измерительного прибора</p></div></div></div>
+          <div class="panel-body">
+            <label class="field-label" for="product-json">Данные товара</label>
+            <div class="editor-wrap"><div class="editor-toolbar"><span>JSON</span><span id="char-count">0 символов</span></div><textarea id="product-json" spellcheck="false" aria-describedby="editor-hint parse-error" autocomplete="off">{
   "name": "",
   "manufacturer": "",
   "specs": {},
   "description": ""
-}</textarea>
-        <button type="submit">Создать черновик</button>
-      </form>
-      <pre id="result" aria-live="polite"></pre>
+}</textarea></div>
+            <p class="hint" id="editor-hint">Обязательное поле — <code>name</code>. Характеристики передавайте в объекте <code>specs</code> как пары «название»: «значение».</p>
+            <div class="inline-message error" id="parse-error" role="alert"></div>
+            <div class="actions"><button class="primary" id="generate" type="button"><span id="button-label">Сформировать черновик</span></button><span class="privacy-note"><b>Факты сохраняются из источника</b>Параметры не генерируются моделью</span></div>
+          </div>
+        </section>
+        <section class="panel" aria-labelledby="result-title">
+          <div class="panel-head result-head"><div class="panel-title"><span class="panel-index">02</span><div><h2 id="result-title">Результат</h2><p id="result-subtitle">Предпросмотр подготовленного материала</p></div></div><div class="result-actions hidden" id="copy-actions"><button class="secondary copy-btn" id="copy-markdown" type="button">Копировать Markdown</button><button class="secondary copy-btn" id="copy-json" type="button">Копировать JSON</button></div></div>
+          <div id="copy-status" class="hidden" role="status" aria-live="polite"></div>
+          <div class="result-body">
+            <div class="tabs hidden" id="result-tabs" role="tablist" aria-label="Формат результата">
+              <button class="tab" id="tab-preview" role="tab" aria-selected="true" aria-controls="panel-preview" tabindex="0" type="button">Предпросмотр</button>
+              <button class="tab" id="tab-markdown" role="tab" aria-selected="false" aria-controls="panel-markdown" tabindex="-1" type="button">Markdown</button>
+              <button class="tab" id="tab-json" role="tab" aria-selected="false" aria-controls="panel-json" tabindex="-1" type="button">JSON</button>
+            </div>
+            <div class="empty-state" id="empty-state"><div><div class="empty-icon" aria-hidden="true">↗</div><h3>Здесь появится карточка</h3><p>Заполните данные прибора слева и запустите генерацию. Результат можно будет проверить и скопировать.</p><div class="mini">Поддерживаются SEO-текст, характеристики и коммерческий блок</div></div></div>
+            <div class="loading-state hidden" id="loading-state" aria-live="polite"><div><div class="spinner" aria-hidden="true"></div><strong>Готовим черновик…</strong><div>Локальная модель анализирует исходные данные</div></div></div>
+            <div class="status-error hidden" id="request-error" role="alert"><div><div class="empty-icon" aria-hidden="true">!</div><strong>Не удалось подготовить черновик</strong><p id="request-error-text"></p></div></div>
+            <div class="preview hidden" id="panel-preview" role="tabpanel" aria-labelledby="tab-preview" tabindex="0"></div>
+            <pre class="code-output hidden" id="panel-markdown" role="tabpanel" aria-labelledby="tab-markdown" tabindex="0"></pre>
+            <pre class="code-output hidden" id="panel-json" role="tabpanel" aria-labelledby="tab-json" tabindex="0"></pre>
+          </div>
+        </section>
+      </div>
+      <p class="footer-note">Результат — черновик для проверки контент-менеджером. Проверьте предупреждения перед публикацией.</p>
     </main>
     <script>
-      document.querySelector("#product-form").addEventListener("submit", async (event) => {
-        event.preventDefault();
-        const result = document.querySelector("#result");
-        try {
-          const product = JSON.parse(document.querySelector("#product-json").value);
-          const response = await fetch("/api/products/draft", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(product)
-          });
-          result.textContent = JSON.stringify(await response.json(), null, 2);
-        } catch (error) {
-          result.textContent = `Ошибка JSON: ${error.message}`;
+      (() => {
+        const editor = document.querySelector("#product-json");
+        const form = document.querySelector("#product-form");
+        const generate = document.querySelector("#generate");
+        const errorBox = document.querySelector("#parse-error");
+        const count = document.querySelector("#char-count");
+        const empty = document.querySelector("#empty-state");
+        const loading = document.querySelector("#loading-state");
+        const requestError = document.querySelector("#request-error");
+        const tabs = [...document.querySelectorAll('[role="tab"]')];
+        const tabPanels = [document.querySelector("#panel-preview"), document.querySelector("#panel-markdown"), document.querySelector("#panel-json")];
+        const copyActions = document.querySelector("#copy-actions");
+        const copyStatus = document.querySelector("#copy-status");
+        let resultData = null;
+        const text = (tag, value, className) => { const node = document.createElement(tag); if (className) node.className = className; node.textContent = value ?? ""; return node; };
+        const asList = (items) => { const list = document.createElement("ul"); items.forEach((value) => list.append(text("li", value))); return list; };
+        function updateCount() { count.textContent = `${editor.value.length.toLocaleString("ru-RU")} символов`; }
+        function showTab(index) {
+          tabs.forEach((tab, i) => { const selected = i === index; tab.setAttribute("aria-selected", String(selected)); tab.tabIndex = selected ? 0 : -1; tabPanels[i].classList.toggle("hidden", !selected); });
         }
-      });
+        function buildPreview(draft) {
+          const view = document.querySelector("#panel-preview"); view.replaceChildren();
+          const addSection = (heading, content) => { view.append(text("h3", heading)); view.append(content); };
+          addSection("SEO-заголовок", text("p", draft.seo_title, "seo-title"));
+          addSection("SEO-описание", text("p", draft.seo_description));
+          const table = document.createElement("table"); table.className = "spec-table";
+          const body = document.createElement("tbody");
+          if (draft.characteristics.length) draft.characteristics.forEach((item) => { const row = document.createElement("tr"); row.append(text("td", item.name), text("td", item.value)); body.append(row); });
+          else { const row = document.createElement("tr"); const cell = text("td", "Технические характеристики: данных нет"); cell.colSpan = 2; row.append(cell); body.append(row); }
+          table.append(body);
+          addSection("Ключевые характеристики", table);
+          addSection("Поисковые запросы", asList(draft.search_queries));
+          addSection("Коммерческий блок", text("p", draft.commercial_block));
+          if (draft.missing_data.length) { const note = document.createElement("div"); note.className = "notice neutral"; note.append(text("strong", "Отсутствующие данные"), asList(draft.missing_data)); view.append(note); }
+          if (draft.warnings.length) { const note = document.createElement("div"); note.className = "notice warning"; note.append(text("strong", "Требует ручной проверки"), asList(draft.warnings)); view.append(note); }
+        }
+        function setBusy(busy) { generate.disabled = busy; document.querySelector("#button-label").textContent = busy ? "Создаём черновик…" : "Сформировать черновик"; empty.classList.toggle("hidden", busy || Boolean(resultData)); loading.classList.toggle("hidden", !busy); requestError.classList.add("hidden"); if (busy) { document.querySelector("#result-tabs").classList.add("hidden"); copyActions.classList.add("hidden"); tabPanels.forEach((panel) => panel.classList.add("hidden")); } }
+        editor.addEventListener("input", updateCount); updateCount();
+        generate.addEventListener("click", async (event) => {
+          event.preventDefault(); errorBox.classList.remove("show");
+          let product;
+          try { product = JSON.parse(editor.value); if (!product || Array.isArray(product) || typeof product !== "object") throw new Error("Ожидается JSON-объект товара."); }
+          catch (error) { errorBox.textContent = `Проверьте JSON: ${error.message}`; errorBox.classList.add("show"); editor.focus(); return; }
+          if (generate.disabled) return;
+          setBusy(true);
+          try {
+            const response = await fetch("/api/products/draft", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(product) });
+            const body = await response.json();
+            if (!response.ok) throw new Error(typeof body.detail === "string" ? body.detail : "Запрос не выполнен. Проверьте введённые данные и состояние локальной модели.");
+            resultData = body; buildPreview(body.draft);
+            document.querySelector("#panel-markdown").textContent = body.markdown;
+            document.querySelector("#panel-json").textContent = JSON.stringify(body, null, 2);
+            empty.classList.add("hidden"); document.querySelector("#result-tabs").classList.remove("hidden"); copyActions.classList.remove("hidden");
+            document.querySelector("#result-subtitle").textContent = "Черновик готов · проверьте предупреждения перед публикацией";
+            showTab(0);
+          } catch (error) { document.querySelector("#request-error-text").textContent = error.message || "Не удалось связаться с сервисом."; requestError.classList.remove("hidden"); }
+          finally { loading.classList.add("hidden"); generate.disabled = false; document.querySelector("#button-label").textContent = "Сформировать черновик"; }
+        });
+        tabs.forEach((tab, index) => {
+          tab.addEventListener("click", () => showTab(index));
+          tab.addEventListener("keydown", (event) => { let next = index; if (event.key === "ArrowRight") next = (index + 1) % tabs.length; else if (event.key === "ArrowLeft") next = (index + tabs.length - 1) % tabs.length; else if (event.key === "Home") next = 0; else if (event.key === "End") next = tabs.length - 1; else return; event.preventDefault(); showTab(next); tabs[next].focus(); });
+        });
+        async function copy(value, label) {
+          try { if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(value); else { const temporary = document.createElement("textarea"); temporary.value = value; temporary.style.position = "fixed"; temporary.style.opacity = "0"; document.body.append(temporary); temporary.select(); const ok = document.execCommand("copy"); temporary.remove(); if (!ok) throw new Error("copy unavailable"); }
+            copyStatus.textContent = `${label} скопирован в буфер обмена`; copyStatus.className = "inline-message info show";
+          } catch { copyStatus.textContent = "Не удалось скопировать автоматически. Выделите текст во вкладке результата."; copyStatus.className = "inline-message error show"; }
+        }
+        document.querySelector("#copy-markdown").addEventListener("click", () => copy(resultData.markdown, "Markdown"));
+        document.querySelector("#copy-json").addEventListener("click", () => copy(JSON.stringify(resultData, null, 2), "JSON"));
+      })();
     </script>
   </body>
 </html>

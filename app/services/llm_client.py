@@ -7,7 +7,7 @@ from pydantic import ValidationError
 
 from app.config import Settings
 from app.schemas import GeneratedCopy, ProductInput
-from app.services.prompt_builder import SYSTEM_PROMPT, build_user_prompt
+from app.services.prompt_builder import SYSTEM_PROMPT, build_repair_prompt, build_user_prompt
 
 
 class LLMError(RuntimeError):
@@ -33,6 +33,10 @@ class LLMProviderError(LLMError):
 class LLMResponseError(LLMError):
     """Ollama returned an invalid or incomplete response."""
 
+    def __init__(self, message: str, *, candidate: str | None = None) -> None:
+        super().__init__(message)
+        self.candidate = candidate
+
 
 class LLMRefusalError(LLMError):
     """The model refused to generate the requested content."""
@@ -50,24 +54,40 @@ class LLMClient:
         self.config = config
         self.transport = transport
 
-    async def generate_copy(self, product: ProductInput) -> GeneratedCopy:
-        """Return validated model-generated text fields without source characteristics."""
+    async def generate_copy(
+        self,
+        product: ProductInput,
+        *,
+        previous_response: str | None = None,
+        repair_errors: list[str] | None = None,
+    ) -> GeneratedCopy:
+        """Generate or repair validated textual fields without source characteristics."""
         model = self.config.ollama_model
         if model is None or not model.strip():
             raise LLMConfigurationError("Не задана локальная модель Ollama")
 
         url = f"{self.config.ollama_base_url.rstrip('/')}/api/chat"
+        messages = [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": build_user_prompt(product)},
+        ]
+        if repair_errors is not None:
+            messages.append(
+                {
+                    "role": "user",
+                    "content": build_repair_prompt(previous_response, repair_errors),
+                }
+            )
+
         payload = {
             "model": model,
-            "messages": [
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": build_user_prompt(product)},
-            ],
+            "messages": messages,
             "stream": False,
             "think": False,
             "format": GeneratedCopy.model_json_schema(),
         }
 
+        candidate: str | None = None
         try:
             async with httpx.AsyncClient(
                 timeout=self.config.llm_timeout_seconds,
@@ -101,4 +121,6 @@ class LLMClient:
         except LLMRefusalError:
             raise
         except (ValueError, KeyError, TypeError, ValidationError) as exc:
-            raise LLMResponseError("Локальная модель вернула некорректный ответ") from exc
+            raise LLMResponseError(
+                "Локальная модель вернула некорректный ответ", candidate=candidate
+            ) from exc

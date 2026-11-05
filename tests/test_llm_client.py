@@ -82,6 +82,39 @@ def test_client_sends_ollama_chat_contract_and_parses_response() -> None:
     assert result == GeneratedCopy.model_validate(_generated_data())
 
 
+def test_client_accepts_repair_context_without_changing_source_payload() -> None:
+    captured: dict[str, object] = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        captured["payload"] = json.loads(request.content)
+        return httpx.Response(
+            200,
+            json={"message": {"role": "assistant", "content": json.dumps(_generated_data())}},
+        )
+
+    client = LLMClient(_config(), transport=httpx.MockTransport(handler))
+
+    import anyio
+
+    async def generate_repair() -> GeneratedCopy:
+        return await client.generate_copy(
+            _product(),
+            previous_response='{"seo_title":"слишком длинный"}',
+            repair_errors=["seo_title: длина превышает лимит"],
+        )
+
+    anyio.run(generate_repair)
+
+    payload = captured["payload"]
+    assert isinstance(payload, dict)
+    assert len(payload["messages"]) == 3
+    assert "product_json" in payload["messages"][1]["content"]
+    repair_message = payload["messages"][2]["content"]
+    assert "только исходные четыре текстовых поля" in repair_message
+    assert "seo_title: длина превышает лимит" in repair_message
+    assert '"previous_response"' in repair_message
+
+
 def test_missing_model_fails_before_http_request() -> None:
     client = LLMClient(Settings(_env_file=None))
 
