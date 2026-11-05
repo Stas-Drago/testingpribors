@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Черновик карточки товара</title>
+  </head>
+  <body>
+    <main>
+      <h1>Генератор черновика карточки товара</h1>
+      <p>Вставьте JSON одного товара. Генерация будет доступна после реализации сервиса.</p>
+      <form id="product-form">
+        <label for="product-json">Данные товара в JSON</label>
+        <textarea id="product-json" rows="18" cols="80" required>{
+  "name": "",
+  "manufacturer": "",
+  "specs": {},
+  "description": ""
+}</textarea>
+        <button type="submit">Создать черновик</button>
+      </form>
+      <pre id="result" aria-live="polite"></pre>
+    </main>
+    <script>
+      document.querySelector("#product-form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const result = document.querySelector("#result");
+        try {
+          const product = JSON.parse(document.querySelector("#product-json").value);
+          const response = await fetch("/api/products/draft", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(product)
+          });
+          result.textContent = JSON.stringify(await response.json(), null, 2);
+        } catch (error) {
+          result.textContent = `Ошибка JSON: ${error.message}`;
+        }
+      });
+    </script>
+  </body>
+</html>
