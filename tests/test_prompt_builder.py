@@ -42,8 +42,8 @@ def test_source_text_is_explicitly_marked_as_untrusted() -> None:
 
 
 def test_api_secret_is_not_read_or_included_in_prompt(monkeypatch) -> None:
-    secret = "local-ollama-test-value-do-not-leak"
-    monkeypatch.setenv("OLLAMA_MODEL", secret)
+    secret = "openai-test-key-do-not-leak"
+    monkeypatch.setenv("OPENAI_API_KEY", secret)
 
     prompt = build_user_prompt(ProductInput(name="Прибор"))
 

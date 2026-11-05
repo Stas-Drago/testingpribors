@@ -1,8 +1,4 @@
-"""Generate and save real local-model results for the checked-in product examples.
-
-Run from the repository root with Ollama available at OLLAMA_BASE_URL, e.g.:
-OLLAMA_BASE_URL=http://host.docker.internal:11434 python -m scripts.generate_examples
-"""
+"""Generate and save real OpenAI API results for the checked-in product examples."""
 
 import asyncio
 import json
@@ -23,12 +19,12 @@ async def generate_report() -> str:
     """Generate both drafts before returning a report, avoiding partial/fake results."""
     service = DraftService(LLMClient(settings))
     sections: list[str] = [
-        "# Фактические результаты генерации Ollama",
+        "# Фактические результаты генерации OpenAI API",
         "",
         f"Дата генерации: {date.today().isoformat()}",
-        f"Модель: `{settings.ollama_model}`",
+        f"Модель: `{settings.openai_model}`",
         "",
-        "Все текстовые поля ниже получены реальными вызовами локальной модели и являются",
+        "Все текстовые поля ниже получены реальными вызовами OpenAI API и являются",
         "черновиками. Контент-менеджер должен проверить их перед публикацией.",
         "Числовой валидатор не проверяет семантическую достоверность утверждений.",
         "",
@@ -69,8 +65,8 @@ async def generate_report() -> str:
 
 async def main() -> None:
     """Write results only after both live generations succeed."""
-    if not settings.ollama_model:
-        raise SystemExit("Не задан OLLAMA_MODEL; файл результатов не изменён.")
+    if not settings.openai_api_key:
+        raise SystemExit("Не задан OPENAI_API_KEY; файл результатов не изменён.")
     output_path = ROOT / "examples" / "generated_results.md"
     try:
         report = await generate_report()
@@ -82,7 +78,8 @@ async def main() -> None:
         ) from None
     except LLMError as exc:
         raise SystemExit(
-            f"Реальная генерация не завершена ({type(exc).__name__}); файл результатов не изменён."
+            f"Генерация через OpenAI API не завершена ({type(exc).__name__}); "
+            "файл результатов не изменён."
         ) from None
     output_path.write_text(report, encoding="utf-8")
     print(f"Оба ответа модели сохранены: {output_path.relative_to(ROOT)}")

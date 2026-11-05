@@ -48,7 +48,7 @@ async def index(request: Request) -> HTMLResponse:
 
 @app.get("/health")
 async def health() -> dict[str, str]:
-    """Report process availability without contacting Ollama."""
+    """Report process availability without contacting OpenAI."""
     return {"status": "ok"}
 
 
@@ -61,11 +61,11 @@ async def create_draft(
     try:
         draft = await service.create_draft(product)
     except LLMTimeoutError as exc:
-        raise _http_error(504, "Истекло время ожидания локальной модели") from exc
+        raise _http_error(504, "Истекло время ожидания ответа OpenAI API") from exc
     except (LLMConfigurationError, LLMUnavailableError) as exc:
-        raise _http_error(503, "Локальная модель недоступна или не настроена") from exc
+        raise _http_error(503, "OpenAI API не настроен или сейчас недоступен") from exc
     except (LLMProviderError, LLMResponseError, LLMRefusalError, DraftValidationError) as exc:
-        raise _http_error(502, "Не удалось получить корректный черновик от локальной модели") from exc
+        raise _http_error(502, "Не удалось получить корректный черновик от OpenAI API") from exc
     return DraftResponse(draft=draft, markdown=render_markdown(draft))
 
 

@@ -1,4 +1,4 @@
-"""Mocked HTTP contract and failure tests for the local Ollama client."""
+"""Mocked HTTP contract and failure tests for the OpenAI API client."""
 
 import json
 
@@ -19,7 +19,12 @@ from app.services.llm_client import (
 
 
 def _config(**overrides: object) -> Settings:
-    return Settings(_env_file=None, ollama_model="qwen3:8b", **overrides)
+    return Settings(
+        _env_file=None,
+        openai_api_key="test-secret",
+        openai_model="gpt-4o-mini",
+        **overrides,
+    )
 
 
 def _product() -> ProductInput:
@@ -40,16 +45,21 @@ def _generated_data() -> dict[str, object]:
     }
 
 
-def test_client_sends_ollama_chat_contract_and_parses_response() -> None:
+def _response(data: dict[str, object]) -> httpx.Response:
+    return httpx.Response(
+        200,
+        json={"choices": [{"message": {"role": "assistant", "content": json.dumps(data)}}]},
+    )
+
+
+def test_client_sends_openai_chat_contract_and_parses_response() -> None:
     captured: dict[str, object] = {}
 
     def handler(request: httpx.Request) -> httpx.Response:
         captured["url"] = str(request.url)
+        captured["headers"] = dict(request.headers)
         captured["payload"] = json.loads(request.content)
-        return httpx.Response(
-            200,
-            json={"message": {"role": "assistant", "content": json.dumps(_generated_data())}},
-        )
+        return _response(_generated_data())
 
     client = LLMClient(_config(), transport=httpx.MockTransport(handler))
 
@@ -58,27 +68,23 @@ def test_client_sends_ollama_chat_contract_and_parses_response() -> None:
     result = anyio.run(client.generate_copy, _product())
 
     payload = captured["payload"]
-    assert captured["url"] == "http://localhost:11434/api/chat"
+    assert captured["url"] == "https://api.openai.com/v1/chat/completions"
+    assert captured["headers"]["authorization"] == "Bearer test-secret"
     assert isinstance(payload, dict)
-    assert payload["model"] == "qwen3:8b"
+    assert payload["model"] == "gpt-4o-mini"
     assert payload["stream"] is False
-    assert payload["think"] is False
     assert payload["messages"][0]["role"] == "system"
     assert payload["messages"][1]["role"] == "user"
-    assert "format" in payload
-    assert payload["format"]["additionalProperties"] is False
-    assert set(payload["format"]["properties"]) == {
+    schema = payload["response_format"]["json_schema"]
+    assert schema["strict"] is True
+    assert schema["schema"]["additionalProperties"] is False
+    assert set(schema["schema"]["properties"]) == {
         "seo_title",
         "seo_description",
         "search_queries",
         "commercial_block",
     }
-    assert set(payload["format"]["required"]) == {
-        "seo_title",
-        "seo_description",
-        "search_queries",
-        "commercial_block",
-    }
+    assert set(schema["schema"]["required"]) == set(schema["schema"]["properties"])
     assert result == GeneratedCopy.model_validate(_generated_data())
 
 
@@ -87,10 +93,7 @@ def test_client_accepts_repair_context_without_changing_source_payload() -> None
 
     def handler(request: httpx.Request) -> httpx.Response:
         captured["payload"] = json.loads(request.content)
-        return httpx.Response(
-            200,
-            json={"message": {"role": "assistant", "content": json.dumps(_generated_data())}},
-        )
+        return _response(_generated_data())
 
     client = LLMClient(_config(), transport=httpx.MockTransport(handler))
 
@@ -115,16 +118,41 @@ def test_client_accepts_repair_context_without_changing_source_payload() -> None
     assert '"previous_response"' in repair_message
 
 
-def test_missing_model_fails_before_http_request() -> None:
+def test_missing_api_key_fails_before_http_request() -> None:
     client = LLMClient(Settings(_env_file=None))
 
     import anyio
 
-    with pytest.raises(LLMConfigurationError, match="Не задана локальная модель"):
+    with pytest.raises(LLMConfigurationError, match="Не задан ключ OpenAI API"):
         anyio.run(client.generate_copy, _product())
 
 
-def test_unavailable_ollama_is_mapped_safely() -> None:
+def test_custom_base_url_is_supported() -> None:
+    captured: list[str] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        captured.append(str(request.url))
+        return _response(_generated_data())
+
+    client = LLMClient(
+        _config(openai_base_url="https://gateway.example/v1/"),
+        transport=httpx.MockTransport(handler),
+    )
+    import anyio
+
+    anyio.run(client.generate_copy, _product())
+    assert captured == ["https://gateway.example/v1/chat/completions"]
+
+
+def test_invalid_base_url_is_mapped_to_safe_configuration_error() -> None:
+    client = LLMClient(_config(openai_base_url="not a url"))
+    import anyio
+
+    with pytest.raises(LLMConfigurationError, match="адрес OpenAI API"):
+        anyio.run(client.generate_copy, _product())
+
+
+def test_unavailable_provider_is_mapped_safely() -> None:
     def handler(request: httpx.Request) -> httpx.Response:
         raise httpx.ConnectError("private details", request=request)
 
@@ -149,7 +177,7 @@ def test_timeout_is_mapped_safely() -> None:
         anyio.run(client.generate_copy, _product())
 
 
-@pytest.mark.parametrize("status_code", [400, 404, 429, 500, 503])
+@pytest.mark.parametrize("status_code", [400])
 def test_http_errors_are_mapped_without_response_body(status_code: int) -> None:
     def handler(request: httpx.Request) -> httpx.Response:
         return httpx.Response(status_code, text="sensitive provider detail")
@@ -157,17 +185,49 @@ def test_http_errors_are_mapped_without_response_body(status_code: int) -> None:
     client = LLMClient(_config(), transport=httpx.MockTransport(handler))
     import anyio
 
-    expected_error = LLMUnavailableError if status_code == 404 else LLMProviderError
-    with pytest.raises(expected_error) as exc_info:
+    with pytest.raises(LLMProviderError) as exc_info:
         anyio.run(client.generate_copy, _product())
     assert "sensitive provider detail" not in str(exc_info.value)
+
+
+@pytest.mark.parametrize(
+    ("status_code", "error_type"),
+    [
+        (401, LLMConfigurationError),
+        (403, LLMConfigurationError),
+        (429, LLMUnavailableError),
+        (500, LLMUnavailableError),
+        (503, LLMUnavailableError),
+    ],
+)
+def test_auth_and_temporary_http_errors_are_mapped_safely(status_code, error_type) -> None:
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(status_code, text="sensitive provider detail")
+
+    client = LLMClient(_config(), transport=httpx.MockTransport(handler))
+    import anyio
+
+    with pytest.raises(error_type) as exc_info:
+        anyio.run(client.generate_copy, _product())
+    assert "sensitive provider detail" not in str(exc_info.value)
+
+
+def test_unknown_model_is_mapped_as_unavailable() -> None:
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(404, text="sensitive model detail")
+
+    client = LLMClient(_config(), transport=httpx.MockTransport(handler))
+    import anyio
+
+    with pytest.raises(LLMUnavailableError):
+        anyio.run(client.generate_copy, _product())
 
 
 def test_model_refusal_is_mapped() -> None:
     def handler(request: httpx.Request) -> httpx.Response:
         return httpx.Response(
             200,
-            json={"message": {"role": "assistant", "content": "{}", "refusal": True}},
+            json={"choices": [{"message": {"content": None, "refusal": "not allowed"}}]},
         )
 
     client = LLMClient(_config(), transport=httpx.MockTransport(handler))
@@ -180,10 +240,11 @@ def test_model_refusal_is_mapped() -> None:
 @pytest.mark.parametrize(
     "body",
     [
-        {"message": {"role": "assistant", "content": "not json"}},
-        {"message": {"role": "assistant", "content": "{}"}},
-        {"message": {"role": "assistant", "content": ""}},
-        {"message": {"role": "assistant"}},
+        {"choices": [{"message": {"role": "assistant", "content": "not json"}}]},
+        {"choices": [{"message": {"role": "assistant", "content": "{}"}}]},
+        {"choices": [{"message": {"role": "assistant", "content": ""}}]},
+        {"choices": [{"message": {"role": "assistant"}}]},
+        {"choices": []},
         {"unexpected": True},
     ],
 )

@@ -16,7 +16,7 @@
   <body>
     <header class="topbar">
       <div class="brand"><span class="brand-mark" aria-hidden="true">С</span><span>Союзприбор</span><span class="brand-sub">Контент-студия</span></div>
-      <div class="local-pill">Локальная генерация · Ollama</div>
+      <div class="local-pill">Генерация через OpenAI API</div>
     </header>
     <main class="shell">
       <section class="intro" aria-labelledby="page-title">
@@ -108,7 +108,7 @@
           try {
             const response = await fetch("/api/products/draft", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(product) });
             const body = await response.json();
-            if (!response.ok) throw new Error(typeof body.detail === "string" ? body.detail : "Запрос не выполнен. Проверьте введённые данные и состояние локальной модели.");
+            if (!response.ok) throw new Error(typeof body.detail === "string" ? body.detail : "Запрос не выполнен. Проверьте входные данные и настройки OpenAI API.");
             resultData = body; buildPreview(body.draft);
             document.querySelector("#panel-markdown").textContent = body.markdown;
             document.querySelector("#panel-json").textContent = JSON.stringify(body, null, 2);

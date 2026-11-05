@@ -45,15 +45,26 @@ def clear_dependency_overrides():
     app.dependency_overrides.clear()
 
 
-def test_health_is_available_without_local_model(monkeypatch) -> None:
-    monkeypatch.delenv("OLLAMA_MODEL", raising=False)
+def test_health_is_available_without_openai_api_key(monkeypatch) -> None:
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     assert client.get("/health").json() == {"status": "ok"}
+
+
+def test_missing_api_key_returns_safe_503_without_calling_provider(monkeypatch) -> None:
+    monkeypatch.setattr("app.services.draft_service.settings.openai_api_key", None)
+    response = client.post("/api/products/draft", json=PRODUCT)
+    assert response.status_code == 503
+    assert "OpenAI API" in response.json()["detail"]
+    assert "test-secret" not in response.text
 
 
 def test_get_workspace_contains_editor_tabs_and_copy_actions() -> None:
     response = client.get("/")
     assert response.status_code == 200
-    for marker in ("Исходные данные", "Предпросмотр", "Markdown", "JSON", "Копировать Markdown", "Копировать JSON"):
+    for marker in (
+        "Исходные данные", "Предпросмотр", "Markdown", "JSON", "Копировать Markdown",
+        "Копировать JSON", "OpenAI API",
+    ):
         assert marker in response.text
     assert "cdn." not in response.text
 

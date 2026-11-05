@@ -64,30 +64,34 @@ def test_extra_input_fields_are_rejected() -> None:
         ProductInput.model_validate({"name": "DM 02", "unknown": "value"})
 
 
-def test_settings_allow_startup_without_local_model(monkeypatch) -> None:
+def test_settings_allow_startup_without_api_key(monkeypatch) -> None:
     for name in (
-        "OLLAMA_MODEL",
-        "OLLAMA_BASE_URL",
+        "OPENAI_API_KEY",
+        "OPENAI_MODEL",
+        "OPENAI_BASE_URL",
         "LLM_TIMEOUT_SECONDS",
     ):
         monkeypatch.delenv(name, raising=False)
 
     settings = Settings(_env_file=None)
 
-    assert settings.ollama_model is None
-    assert settings.ollama_base_url == "http://localhost:11434"
+    assert settings.openai_api_key is None
+    assert settings.openai_model == "gpt-4o-mini"
+    assert settings.openai_base_url == "https://api.openai.com/v1"
     assert settings.llm_timeout_seconds == 30
 
 
-def test_settings_read_ollama_values_from_environment(monkeypatch) -> None:
-    monkeypatch.setenv("OLLAMA_MODEL", "qwen3:8b")
-    monkeypatch.setenv("OLLAMA_BASE_URL", "http://ollama.test:11434/")
+def test_settings_read_openai_values_from_environment(monkeypatch) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+    monkeypatch.setenv("OPENAI_MODEL", "gpt-4.1-mini")
+    monkeypatch.setenv("OPENAI_BASE_URL", "https://api.example.test/v1/")
     monkeypatch.setenv("LLM_TIMEOUT_SECONDS", "45")
 
     settings = Settings(_env_file=None)
 
-    assert settings.ollama_model == "qwen3:8b"
-    assert settings.ollama_base_url == "http://ollama.test:11434/"
+    assert settings.openai_api_key == "test-key"
+    assert settings.openai_model == "gpt-4.1-mini"
+    assert settings.openai_base_url == "https://api.example.test/v1/"
     assert settings.llm_timeout_seconds == 45
 
 

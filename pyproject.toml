@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "product-card-generator"
 version = "0.1.0"
-description = "Local prototype for drafting B2B product cards from instrument data"
+description = "Cross-platform prototype for drafting B2B product cards with OpenAI"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.110,<1.0",
